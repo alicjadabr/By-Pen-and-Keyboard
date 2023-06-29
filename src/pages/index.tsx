@@ -1,45 +1,15 @@
 import React from 'react'
-import { IoReorderThreeOutline } from 'react-icons/io5'
-import { FaRegBell, FaUsers } from 'react-icons/fa'
-import { BiEditAlt, BiSearch } from 'react-icons/bi'
+import { FaUsers } from 'react-icons/fa'
+import { BiSearch } from 'react-icons/bi'
 import { HiOutlineChevronDown } from 'react-icons/hi'
 import { MdFavorite } from 'react-icons/md'
 import { PiCursorClickDuotone } from 'react-icons/pi'
+import MainLayout from '~/layout/MainLayout'
 
 const HomePage = () => {
+
   return (
-    <div className='flex flex-col w-full h-full'>
-      
-      <header className='h-20 w-full flex flex-row justify-around items-center
-       bg-white border-b-[1px] border-gray-300'>
-
-        <div>
-          <IoReorderThreeOutline className='text-2xl text-gray-600'/>
-        </div>
-
-        <div className='font-thin text-xl'>Blog App</div>
-
-        <div className='flex items-center space-x-2'>
-          <div>
-            <FaRegBell className='text-2xl text-gray-600'/>
-          </div>
-          <div>
-            <div className='w-5 h-5 bg-gray-600 rounded-full'></div>
-          </div>
-          <div>
-            <button className='flex items-center px-4 py-2 space-x-2 
-            border border-gray-200 rounded-2xl transition hover:border-gray-900 
-            hover: text-gray-900'>
-              <div>Dodaj</div>
-              <div>
-                <BiEditAlt />
-              </div>
-            </button>
-          </div>
-        </div>
-
-      </header>
-
+    <MainLayout>
       <section className='grid grid-cols-12'>
         <main className='col-span-8 border-r border-gray-300 px-24'>
           
@@ -150,9 +120,7 @@ const HomePage = () => {
           </div>
           {/* Articles part end */}
         </main>
-        <aside 
-          className='col-span-4 flex flex-col p-6 space-y-4'
-        >
+        <aside className='col-span-4 flex flex-col p-6 space-y-4'>
           <div>
             <div className='flex space-x-2 items-center mb-6'>
               <FaUsers className='text-2xl text-blue-500'/> 
@@ -212,8 +180,7 @@ const HomePage = () => {
           </div>
         </aside>
       </section>
-
-    </div>
+    </MainLayout>
   )
 }
 
