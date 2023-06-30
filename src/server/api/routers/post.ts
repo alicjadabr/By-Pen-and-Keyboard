@@ -43,18 +43,28 @@ export const postRouter = createTRPCRouter({
   ),
 
   getAll: publicProcedure
-    .query(async ({ ctx: { prisma }}) => {
+    .query(async ({ ctx: { prisma, session }}) => {
       const posts = await prisma.post.findMany({
         orderBy: {
           createdAt: 'desc'
         },
-        include: {
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          description: true,
+          createdAt: true,
           author: {
             select: {
               name: true,
               image: true
             }
-          }
+          },
+          bookmarks: session?.user?.id ? {
+            where: {
+              userId: session?.user?.id
+            }
+          } : false
         }
       })
       return posts
@@ -106,8 +116,36 @@ export const postRouter = createTRPCRouter({
       await prisma.like.delete({
         where: {
           userId_postId: {
-            postId: input.postId,
-            userId: session.user.id
+            userId: session.user.id,
+            postId: input.postId
+          }
+        }
+      })
+    }),
+
+  addBookmark: protectedProcedure
+    .input(z.object({
+      postId: z.string(),
+    }))
+    .mutation(async ({ ctx: { prisma, session }, input }) => {
+      await prisma.bookmark.create({
+        data: {
+          userId: session.user.id,
+          postId: input.postId
+        }
+      })
+    }),
+  
+  deleteBookmark: protectedProcedure
+    .input(z.object({
+      postId: z.string(),
+    }))
+    .mutation(async ({ ctx: { prisma, session }, input }) => {
+      await prisma.bookmark.delete({
+        where: {
+          userId_postId: {
+            userId: session.user.id,
+            postId: input.postId
           }
         }
       })
