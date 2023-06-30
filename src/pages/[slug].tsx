@@ -1,24 +1,83 @@
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useCallback } from 'react'
 import Loader from '~/components/Loader'
 import MainLayout from '~/layout/MainLayout'
 import { api } from '~/utils/api'
+import { BsChatText } from 'react-icons/bs'
+import { FcLikePlaceholder, FcLike } from 'react-icons/fc'
+import toast from 'react-hot-toast'
 
 const PostPage = () => {
 
   const router = useRouter()
-  const { isLoading: loadingPost, data: post } = api.post.getSingle.useQuery({
+
+  const postRoute = api.useContext().post
+
+  const { isLoading: loadingPost, data: post, isSuccess } = api.post.getSingle.useQuery({
     slug: router.query.slug as string
   }, {
     enabled: Boolean(router.query.slug)
   })
 
+  const invalidateCurrentPostPage = useCallback(() => {
+    postRoute.getSingle.invalidate({ slug: router.query.slug as string})
+  }, [postRoute.getSingle, router.query.slug])
+
+  const likePost = api.post.likePost.useMutation({
+    onSuccess: () => {
+      toast('Polubiono post!', {
+        icon: '❤️‍🔥',
+      })
+      invalidateCurrentPostPage()
+    }
+  })
+
+  const dislikePost = api.post.dislikePost.useMutation({ 
+    onSuccess: () => {
+      toast('Usunięto polubienie dla tego postu', {
+        icon: '💔',
+      })
+      invalidateCurrentPostPage()
+    }
+
+  })
+
   return (
     <MainLayout>
+
       {loadingPost && (
         <span className='mt-10'>
           <Loader size={50} />
         </span>
+      )}
+
+      {isSuccess && (
+        <div className='fixed bottom-10 w-full flex justify-center items-center'>
+          <div className='rounded-full px-6 py-3 flex items-center space-x-3 bg-white shadow-lg
+          border border-gray-400 hover:border-gray-800 group transition duration-300 ease-in-out'>
+            <span className='border-r pr-4 border-gray-400 transition duration-300 group-hover:border-gray-800'>
+              
+              {post?.likes && post?.likes.length > 0 ? (
+                <FcLike
+                  className='text-2xl hover:scale-125 cursor-pointer'
+                  onClick={() => post?.id && dislikePost.mutate({ postId: post?.id})}
+                />
+
+              ) : (
+                <FcLikePlaceholder
+                  className='text-2xl hover:scale-125 cursor-pointer'
+                  onClick={() => post?.id && likePost.mutate({ postId: post?.id})}
+                />
+              )}
+              
+            </span>
+            <span>
+              <BsChatText 
+                className='text-xl text-gray-600 hover:scale-125 cursor-pointer'
+              />
+            </span>
+          </div>
+        </div>
       )}
     
       <div className='flex flex-col w-full h-full justify-center items-center p-10'>
