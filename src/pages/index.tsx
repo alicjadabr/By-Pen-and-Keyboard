@@ -4,7 +4,9 @@ import { BiSearch } from 'react-icons/bi'
 import { HiOutlineChevronDown } from 'react-icons/hi'
 import { MdFavorite } from 'react-icons/md'
 import { PiCursorClickDuotone } from 'react-icons/pi'
+
 import MainLayout from '~/layout/MainLayout'
+import WriteFormModal from '~/components/WriteFormModal'
 
 const HomePage = () => {
 
@@ -180,6 +182,7 @@ const HomePage = () => {
           </div>
         </aside>
       </section>
+      <WriteFormModal />
     </MainLayout>
   )
 }
