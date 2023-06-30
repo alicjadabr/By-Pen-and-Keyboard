@@ -4,6 +4,7 @@ import { IoReorderThreeOutline, IoLogOutOutline } from 'react-icons/io5'
 import { FaRegBell } from 'react-icons/fa'
 import { BiEditAlt } from 'react-icons/bi'
 import { GlobalContext } from '~/contexts/GlobalContextProvider'
+import Link from 'next/link'
 
 const Header = () => {
   const { status } = useSession()
@@ -17,7 +18,12 @@ const Header = () => {
         <IoReorderThreeOutline className='text-2xl text-gray-600'/>
       </div>
 
-      <div className='font-thin text-xl'>Blog App</div>
+      <Link
+        href={'/'} 
+        className='text-xl cursor-pointer select-none'
+      >
+        Blog App
+      </Link>
 
       {status === 'authenticated' ? (
         <div className='flex items-center space-x-2'>
