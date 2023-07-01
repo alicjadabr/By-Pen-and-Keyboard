@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router'
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import Loader from '~/components/Loader'
 import MainLayout from '~/layout/MainLayout'
 import { api } from '~/utils/api'
 import { BsChatText } from 'react-icons/bs'
 import { FcLikePlaceholder, FcLike } from 'react-icons/fc'
 import toast from 'react-hot-toast'
+import CommentSidebar from '~/components/CommentSidebar'
+
 
 const PostPage = () => {
 
@@ -39,11 +41,20 @@ const PostPage = () => {
       })
       invalidateCurrentPostPage()
     }
-
   })
+
+  const [showComments, setShowComments] = useState(false)
 
   return (
     <MainLayout>
+
+      {post?.id && (
+        <CommentSidebar 
+          showComments={showComments} 
+          setShowComments={setShowComments}
+          postId={post?.id}
+        />
+      )}
 
       {loadingPost && (
         <span className='mt-10'>
@@ -59,13 +70,13 @@ const PostPage = () => {
               
               {post?.likes && post?.likes.length > 0 ? (
                 <FcLike
-                  className='text-2xl hover:scale-125 cursor-pointer'
+                  className='text-2xl hover:scale-125 cursor-pointer transition duration-500 ease-in-out'
                   onClick={() => post?.id && dislikePost.mutate({ postId: post?.id})}
                 />
 
               ) : (
                 <FcLikePlaceholder
-                  className='text-2xl hover:scale-125 cursor-pointer'
+                  className='text-2xl hover:scale-125 cursor-pointer transition duration-500 ease-in-out'
                   onClick={() => post?.id && likePost.mutate({ postId: post?.id})}
                 />
               )}
@@ -73,7 +84,8 @@ const PostPage = () => {
             </span>
             <span>
               <BsChatText 
-                className='text-xl text-gray-600 hover:scale-125 cursor-pointer'
+                className='text-xl text-gray-600 hover:scale-125 cursor-pointer transition duration-500 ease-in-out'
+                onClick={() => setShowComments(true)}
               />
             </span>
           </div>

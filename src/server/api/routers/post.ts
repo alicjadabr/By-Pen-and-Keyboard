@@ -4,6 +4,11 @@ import slugify from 'slugify'
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
+const commentSchema = z.object({
+  text: z.string().min(10),
+  postId: z.string()
+})
+
 export const postRouter = createTRPCRouter({ 
   create: protectedProcedure
   .input(writeFormSchema)
@@ -150,4 +155,57 @@ export const postRouter = createTRPCRouter({
         }
       })
     }),
+
+  addComment: protectedProcedure
+    .input(commentSchema)
+    .mutation(
+      async({ ctx: { prisma, session }, input }) => {
+        await prisma.comment.create({
+          data: {
+            text: input.text,
+            user: {
+              connect: {
+                id: session.user.id,
+              }
+            },
+            post: {
+              connect: {
+                id: input.postId
+              }
+            }
+          }
+        })
+        
+      }
+    ),
+  getComments: publicProcedure
+  .input(z.object({
+    postId: z.string(),
+  }))
+  .query(
+    async({ ctx: {prisma}, input}) => {
+      const comments = await prisma.comment.findMany({
+        orderBy: {
+          createdAt: 'desc'
+        },
+        where: {
+          postId: input.postId
+        },
+        select: {
+          id: true,
+          text: true,
+          createdAt: true,
+          user: {
+            select: {
+              name: true,
+              image: true
+            }
+          }
+        }
+      })
+
+      return comments
+    }
+  )
+
 })

@@ -9,11 +9,10 @@ const MainSection = () => {
   
   const { 
     data: posts, 
-    isSuccess, isLoading: 
-    loadingPosts 
+    isSuccess, 
+    isLoading: loadingPosts 
   } = api.post.getAll.useQuery()
   
-
 
   return (
     <main className='col-span-8 border-r border-gray-300 px-24'>  

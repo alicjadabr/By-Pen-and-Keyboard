@@ -9,12 +9,12 @@ import toast from 'react-hot-toast'
 type PostProps = RouterOutputs['post']['getAll'][number]
 const Post = ({...post}: PostProps) => {
 
-  const[isBookmarked, setIsBookmared] = useState(Boolean(post.bookmarks.length))
+  const[isBookmarked, setIsBookmared] = useState(Boolean(post.bookmarks?.length))
 
   const addBookmark = api.post.addBookmark.useMutation({
     onSuccess: () => {
-      toast('Post został dodany postów do przeczytania!', {
-        icon: '🔖📖',
+      toast('Post został dodany do listy do przeczytania!', {
+        icon: '📖',
       })
       setIsBookmared(prev => !prev)
     }
@@ -28,7 +28,6 @@ const Post = ({...post}: PostProps) => {
       setIsBookmared(prev => !prev)
     }
   })
-
 
   return (
     <div
