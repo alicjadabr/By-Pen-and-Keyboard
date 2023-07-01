@@ -6,7 +6,8 @@ import { BsBookmarkPlus, BsBookmarkX } from 'react-icons/bs'
 import { type RouterOutputs, api } from '~/utils/api'
 import toast from 'react-hot-toast'
 
-type PostProps = RouterOutputs['post']['getAll'][number]
+type PostProps = RouterOutputs['post']['getAll'][number] 
+
 const Post = ({...post}: PostProps) => {
 
   const[isBookmarked, setIsBookmared] = useState(Boolean(post.bookmarks?.length))
@@ -32,10 +33,14 @@ const Post = ({...post}: PostProps) => {
   return (
     <div
       key={post.id} 
-      className='flex flex-col group space-y-4 border-b border-gray-300 
-      pb-8 last:border-none'>
+      className='flex flex-col space-y-4 border-b border-gray-300 
+      pb-8 last:border-none'
+    >
       {/* Article header part (author + date) */}  
-      <div className='flex w-full items-center space-x-3'>
+      <Link 
+        href={`/user/${post.author.username}`}
+        className='flex w-full items-center space-x-3 cursor-pointer'
+      >
         {/* Article author image */}
         <div className='h-10 w-10 relative bg-gray-400 rounded-full flex-none'>
           {post.author.image && 
@@ -50,26 +55,28 @@ const Post = ({...post}: PostProps) => {
         {/* Article author info and articte created date*/}
         <div>
           <p className='font-semibold'>
-            {post.author.name} &#x2022;
+            <span className='transistion duration-500 hover:translate-x-2 hover:text-indigo-800'>
+              {post.author.name}
+            </span> &#x2022;
             <span className='mx-2'>
               {dayjs(post.createdAt).format('DD-MM-YYYY')}
             </span>
           </p>
           <p className='text-sm'>podróżnik bla bla</p>
         </div>
-      </div>
+      </Link>
 
       {/* Article content part */}  
       <Link 
-        className='grid grid-cols-12 w-full gap-4'
+        className='grid grid-cols-12 w-full gap-4 h-44 overflow-hidden group'
         href={`/${post.slug}`}
       >
-        <div className='col-span-8 flex flex-col space-y-4'>
+        <div className='col-span-8 flex flex-col h-full space-y-4'>
           <p className='transition ease-in-out duration-300 text-3xl font-bold
-            text-gray-800 group-hover:-translate-y-2 hover:text-indigo-400'>
+            text-gray-800 group-hover:translate-x-2 hover:text-indigo-400'>
             {post.title}
           </p>
-          <p className='text-sm text-gray-500 breake-words'>
+          <p className='text-sm text-gray-500 breake-words truncate'>
             {post.description}
           </p>
         </div>

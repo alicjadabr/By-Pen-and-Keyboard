@@ -62,7 +62,8 @@ export const postRouter = createTRPCRouter({
           author: {
             select: {
               name: true,
-              image: true
+              image: true,
+              username: true,
             }
           },
           bookmarks: session?.user?.id ? {
