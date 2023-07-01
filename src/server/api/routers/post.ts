@@ -206,6 +206,39 @@ export const postRouter = createTRPCRouter({
 
       return comments
     }
-  )
+  ),
+
+  getReadingList: protectedProcedure
+    .query(
+      async ({ctx: { prisma, session }}) => {
+        const readingList = await prisma.bookmark.findMany({
+          where: {
+            userId: session.user.id
+          },
+          take: 4,
+          orderBy: {
+            createdAt: 'desc'
+          },
+          select: {
+            id: true,
+            post: {
+              select: {
+                title: true,
+                description: true,
+                createdAt: true,
+                slug: true,
+                author: {
+                  select: {
+                    name: true,
+                    image: true
+                  }
+                }
+              }
+            }
+          }
+        })
+        return readingList
+      }
+    ),
 
 })
